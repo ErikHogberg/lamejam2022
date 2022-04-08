@@ -48,6 +48,10 @@ public class PlayerScript : MonoBehaviour
         position.y += y;
         transform.position = position;
 
+       //float randomheight =Random.RandomRange(0.8f, 1.2f);
+       // var scale = transform.localScale;
+       // scale.y = randomheight;
+       // transform.localScale = scale;
 
     }
 }
