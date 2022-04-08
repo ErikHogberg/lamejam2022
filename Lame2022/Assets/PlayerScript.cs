@@ -2,31 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.U2D;
 
 public class PlayerScript : MonoBehaviour
 {
     public float speed = 1;
     public Transform mousebox;
+    public SpriteShapeController line;
+    public float lineSegmentLength = 10;
 
-    // Start is called before the first frame update
+    public Rigidbody hook;
+
+    Queue<Vector3> hookHistory;
+
+    float hookRecordTimer = -1f;
+
     void Start()
     {
-        
+        hookHistory = new Queue<Vector3>(10);
     }
 
-    // Update is called once per frame
     void Update()
     {
         float x = 0;
         float y = 0;
 
-        Vector2 mouseposition = Mouse.current.position.ReadValue();
-        var mouseboxposition = Vector3.zero;
-        mouseboxposition.x = mouseposition. x;
-        mouseboxposition.y = mouseposition. y;
-        mouseboxposition = Camera.main.ScreenToWorldPoint ( mouseboxposition);
+        Vector2 mouseposition = Pointer.current.position.ReadValue();
+        var mouseboxposition = new Vector3(mouseposition.x, mouseposition.y, 0);
+        mouseboxposition = Camera.main.ScreenToWorldPoint(mouseboxposition);
         mouseboxposition.z = 0;
         mousebox.position = mouseboxposition;
+
         if (Keyboard.current.wKey.isPressed)
         {
             y += speed * Time.deltaTime;
@@ -43,11 +49,19 @@ public class PlayerScript : MonoBehaviour
         {
             x += speed * Time.deltaTime;
         }
+
         var position = transform.position;
         position.x += x;
         position.y += y;
         transform.position = position;
 
+        line.spline.Clear();
+        line.spline.InsertPointAt(0, transform.localPosition);
+        foreach (var item in hookHistory)
+        {
+            line.spline.InsertPointAt(0, transform.InverseTransformPoint(item));
+        }
+        line.spline.InsertPointAt(0, transform.InverseTransformPoint(hook.position));
 
     }
 }
