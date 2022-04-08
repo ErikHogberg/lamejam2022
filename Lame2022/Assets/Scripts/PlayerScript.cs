@@ -62,6 +62,10 @@ public class PlayerScript : MonoBehaviour
             line.spline.InsertPointAt(0, transform.InverseTransformPoint(item));
         }
         line.spline.InsertPointAt(0, transform.InverseTransformPoint(hook.position));
+       //float randomheight =Random.RandomRange(0.8f, 1.2f);
+       // var scale = transform.localScale;
+       // scale.y = randomheight;
+       // transform.localScale = scale;
 
     }
 }
