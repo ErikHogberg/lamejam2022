@@ -67,7 +67,11 @@ public class PlayerScript : MonoBehaviour {
 				hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
 			}
 		}
+
 		hook.MovePosition(hookPoints[hookPoints.Count-1]);
+		// TODO: only update hook when "tugged"
+		// TODO: tug line in reverse too, from hook (but prioritize rod)
+		// TODO: add velocity to hook when tugged by line
 
 		if (Keyboard.current.wKey.isPressed) {
 			y += speed * Time.deltaTime;
@@ -98,8 +102,8 @@ public class PlayerScript : MonoBehaviour {
 
 			lastPos = item;
 		}
-		if (Vector3.Distance(lastPos, hook.position) > .1f)
-			line.spline.InsertPointAt(0, hook.position);
+		// if (Vector3.Distance(lastPos, hook.position) > .1f)
+			// line.spline.InsertPointAt(0, hook.position);
 		//float randomheight =Random.RandomRange(0.8f, 1.2f);
 		// var scale = transform.localScale;
 		// scale.y = randomheight;
