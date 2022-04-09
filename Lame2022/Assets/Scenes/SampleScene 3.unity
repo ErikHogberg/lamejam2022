@@ -197,6 +197,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &246576079 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8945359047720097829, guid: 9740a23c144c5ca4fa35720ad6c9e3b2, type: 3}
+  m_PrefabInstance: {fileID: 1488607210}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &260210552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -803,6 +808,99 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &557587228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 557587229}
+  - component: {fileID: 557587232}
+  - component: {fileID: 557587231}
+  - component: {fileID: 557587230}
+  m_Layer: 0
+  m_Name: Timer (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &557587229
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557587228}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -89.35478}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 246576079}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 334.17, y: -812}
+  m_SizeDelta: {x: 668.3463, y: 509.0371}
+  m_Pivot: {x: 0.50000006, y: 0.5}
+--- !u!114 &557587230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557587228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5acc937208c3f46b298cccfd74f00d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 557587231}
+--- !u!114 &557587231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557587228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 60
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 257
+    m_Alignment: 6
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: x.x
+--- !u!222 &557587232
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557587228}
+  m_CullTransparentMesh: 1
 --- !u!1 &712266179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,6 +1451,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7489407257883361562, guid: 9740a23c144c5ca4fa35720ad6c9e3b2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8945359047720097825, guid: 9740a23c144c5ca4fa35720ad6c9e3b2, type: 3}
       propertyPath: m_Name
       value: 'Canvas '
@@ -2291,11 +2393,35 @@ MonoBehaviour:
     m_RotationOrder: 4
   ZoomRange: {x: 5, y: 15}
   ZoomSpeed: 0.001
-  RodMaxAngle: 144.3
-  LinePointDistance: 0.5
-  LineMinPointDistance: 0.3
-  ReeledMul: 0.2
-  MaxBend: 20
+  RodMaxAngle: 99.2
+  ReeledMul: 0.096
+  ReelSpeed: 10
+  ReelCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  LinePointDistance: 0.3
+  LineMinPointDistance: 0.2
   LinePointCount: 50
   LineFloatRate: 1
-  LineWhipRate: 10
+  LineWhipRate: 10000000
