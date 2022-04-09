@@ -25,6 +25,8 @@ public class PlayerScript : MonoBehaviour {
 
 	[Range(0, 90)]
 	public float RodMaxAngle = 20;
+	float rodOldAngle = 0;
+
 	public float LinePointDistance = .5f;
 	public int LinePointCount = 20;
 	public float LineFloatRate = 1;
@@ -44,10 +46,13 @@ public class PlayerScript : MonoBehaviour {
 
 	private void FixedUpdate() {
 		// make hook float upwards
-		// hook.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
+		hook.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
+
+		// restrict max hook speed
 		if (hook.velocity.sqrMagnitude > HookVelocityCap * HookVelocityCap) {
 			hook.velocity = hook.velocity.normalized * HookVelocityCap;
 		}
+		// hook.velocity = Vector2.zero;
 	}
 
 	void Update() {
@@ -68,6 +73,7 @@ public class PlayerScript : MonoBehaviour {
 
 		// rotate fishing rod towards mouse
 		float rodNewAngle = Vector3.SignedAngle(Vector3.up, mouseboxposition - Rod.position, Vector3.back);
+		float rodDelta = rodNewAngle - rodOldAngle;
 		rodNewAngle = Mathf.Sign(rodNewAngle) * Mathf.Min(Mathf.Abs(rodNewAngle), RodMaxAngle);
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
@@ -103,7 +109,8 @@ public class PlayerScript : MonoBehaviour {
 			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
 			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
 			// flick hook if it was tugged
-			hook.AddForce(delta * LineWhipRate, ForceMode2D.Impulse);
+			hook.velocity = Vector2.zero;
+			hook.AddForce(-delta * Mathf.Abs(rodDelta) * LineWhipRate, ForceMode2D.Impulse);
 		}
 
 		// move player
@@ -136,9 +143,14 @@ public class PlayerScript : MonoBehaviour {
 		Vector3 lastPos = RodEnd.position;
 		line.spline.InsertPointAt(0, lastPos);
 		foreach (var item in hookPoints) {
-			if (Vector3.Distance(lastPos, item) > .1f)
+			// skips successive points in the same position
+			if (Vector3.Distance(lastPos, item) > .1f) {
 				line.spline.InsertPointAt(0, item);
-			lastPos = item;
+				lastPos = item;
+			}
+		}
+		if (Vector3.Distance(lastPos, hook.position) > .1f) {
+			line.spline.InsertPointAt(0, hook.position);
 		}
 
 		// wobble player
@@ -146,6 +158,8 @@ public class PlayerScript : MonoBehaviour {
 		// var scale = transform.localScale;
 		// scale.y = randomheight;
 		// transform.localScale = scale;
+
+		rodOldAngle = rodNewAngle;
 
 	}
 }
