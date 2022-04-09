@@ -44,8 +44,6 @@ public class PlayerScript : MonoBehaviour {
 
 	void Update() {
 
-
-
 		float x = 0;
 		float y = 0;
 
@@ -60,7 +58,9 @@ public class PlayerScript : MonoBehaviour {
 
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
-		hookPoints[0] = RodEnd.position;
+		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > LinePointDistance * .8f) {
+			hookPoints[hookPoints.Count - 1] = hook.position + (hookPoints[hookPoints.Count - 1] - hook.position).normalized * LinePointDistance;
+		}
 
 		for (int i = hookPoints.Count - 2; i >= 0; i--) {
 			Vector3 prevPos = hookPoints[i + 1];
@@ -70,6 +70,7 @@ public class PlayerScript : MonoBehaviour {
 			}
 		}
 
+		hookPoints[0] = RodEnd.position;
 		for (int i = 1; i < hookPoints.Count; i++) {
 
 			// hookPoints[i] += Vector3.up * LineFloatRate * Time.deltaTime;
@@ -82,11 +83,14 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > LinePointDistance) {
-			// hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
+			// 	// hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
 			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
 			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
 			hook.velocity = delta * LineWhipRate;
+			// hook.MovePosition(hookPoints[hookPoints.Count - 1]);
 		}
+
+
 		// TODO: only update hook when "tugged"
 		// TODO: tug line in reverse too, from hook (but prioritize rod)
 		// TODO: add velocity to hook when tugged by line
