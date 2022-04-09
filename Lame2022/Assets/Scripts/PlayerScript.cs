@@ -30,13 +30,16 @@ public class PlayerScript : MonoBehaviour {
 
 	public float LinePointDistance = .5f;
 	public float LineMinPointDistance = .5f;
-	public float MaxBendPerSec = 30f;
+	[Range(0, 1)]
+	public float ReeledMul = .2f;
+	public float MaxBend = 30f;
 	public int LinePointCount = 20;
 	public float LineFloatRate = 1;
 	public float LineWhipRate = 1;
 
 
 	List<Vector2> hookPoints = new List<Vector2>();
+	List<Vector2> hookCache = new List<Vector2>();
 
 	Vector2 avgRodVelocity = Vector2.zero;
 
@@ -44,6 +47,7 @@ public class PlayerScript : MonoBehaviour {
 		// subdivide fishing line
 		for (int i = 0; i < LinePointCount; i++) {
 			hookPoints.Add(Vector3.up * 1 * .2f);
+			hookCache.Add(Vector3.up * 1 * .2f);
 		}
 
 		if (!ZoomCamera) ZoomCamera = Camera.main;
@@ -115,17 +119,28 @@ public class PlayerScript : MonoBehaviour {
 				hookPoints[i] = prevPos + normalizedDelta * LineMinPointDistance;
 			}
 
+			hookCache[i] = hookPoints[i];
+
+		}
+
+
+		// enforce bending limit
+		for (int i = 2; i < hookPoints.Count; i++) {
+			Vector2 prevPos = hookPoints[i - 1];
+			Vector2 prePrevPos = hookPoints[i - 2];
+			Vector2 oldPos = hookPoints[i];
+			Vector2 prevDelta = prevPos - prePrevPos;
+			Vector2 oldDelta = oldPos - prevPos;
+			float cachedDistance = (hookCache[i] - hookCache[i - 1]).magnitude;
+
 			Vector2 newDelta = hookPoints[i] - prevPos;
 
-			if (newDelta == Vector2.zero || oldDelta == Vector2.zero) continue;
 
-			float angleDiff = Vector2.SignedAngle(oldDelta, newDelta);
+			float angleDiff = Vector2.SignedAngle(prevDelta, oldDelta);
 
-			float maxAngle = MaxBendPerSec * Time.deltaTime;
-			if (Mathf.Abs(angleDiff) > maxAngle) {
-				hookPoints[i] = prevPos + Rotate(oldDelta, Mathf.Sign(angleDiff) * maxAngle);
+			if (Mathf.Abs(angleDiff) > MaxBend) {
+				hookPoints[i] = prevPos + Rotate(prevDelta, Mathf.Sign(angleDiff) * MaxBend).normalized * cachedDistance;
 			}
-
 		}
 
 		// tug hook

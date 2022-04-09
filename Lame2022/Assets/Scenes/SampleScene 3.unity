@@ -2293,8 +2293,9 @@ MonoBehaviour:
   ZoomSpeed: 0.001
   RodMaxAngle: 144.3
   LinePointDistance: 0.5
-  LineMinPointDistance: 0.5
-  MaxBendPerSec: 1
-  LinePointCount: 20
+  LineMinPointDistance: 0.3
+  ReeledMul: 0.2
+  MaxBend: 20
+  LinePointCount: 50
   LineFloatRate: 1
   LineWhipRate: 10
