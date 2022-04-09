@@ -8,9 +8,14 @@ public class Fish : MonoBehaviour {
 	public Vector2 speed;
 	float spawntimer = 1;
 	// Start is called before the first frame update
+
+	public Sprite[] sprites;
+	SpriteRenderer spriteRenderer;
+
 	void Start() {
 		rb.velocity = speed;
-
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length-1)]; 
 	}
 
 	// Update is called once per frame

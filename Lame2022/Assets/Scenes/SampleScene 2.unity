@@ -177,6 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 161806111}
   speed: {x: 2, y: 1}
+  sprites: []
 --- !u!212 &161806113
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1530,6 +1531,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1714910388}
   speed: {x: 2, y: 1}
+  sprites:
+  - {fileID: 21300000, guid: eb4af5fffcde9964fb7ac46f9097a4d0, type: 3}
+  - {fileID: 21300000, guid: a5fabf7cc9ccb79449073b2201766795, type: 3}
+  - {fileID: 21300000, guid: 5eabdcb87a4c98e41be0634f0abf413e, type: 3}
+  - {fileID: 21300000, guid: ae88b1e6fed95054fa4e81c5043f15d1, type: 3}
+  - {fileID: 21300000, guid: 4c7cca24b12ce3b49bf96fdebc48f1d8, type: 3}
+  - {fileID: 21300000, guid: a373b41a2496aee41b660924098c114e, type: 3}
 --- !u!212 &1714910390
 SpriteRenderer:
   m_ObjectHideFlags: 0
