@@ -39,7 +39,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
-		hook.AddForce(Vector2.up);
+		hook.AddForce(Vector2.up, ForceMode2D.Force);
 	}
 
 	void Update() {
