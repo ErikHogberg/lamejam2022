@@ -28,10 +28,18 @@ public class PlayerScript : MonoBehaviour {
 	float rodOldAngle = 0;
 	Vector3 rodEndOldPos = Vector3.zero;
 
-	public float LinePointDistance = .5f;
-	public float LineMinPointDistance = .5f;
+	[Space]
 	[Range(0, 1)]
 	public float ReeledMul = .2f;
+	public float ReelSpeed = .2f;
+	public AnimationCurve ReelCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+	[Space]
+	public float LinePointDistance = .5f;
+	public float LineMinPointDistance = .5f;
+
+
+	[Range(0, 180)]
 	public float MaxBend = 30f;
 	public int LinePointCount = 20;
 	public float LineFloatRate = 1;
@@ -42,6 +50,7 @@ public class PlayerScript : MonoBehaviour {
 	List<Vector2> hookCache = new List<Vector2>();
 
 	Vector2 avgRodVelocity = Vector2.zero;
+	float reelprogress = 1;
 
 	void Start() {
 		// subdivide fishing line
@@ -65,6 +74,15 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	void Update() {
+
+		if (Mouse.current.leftButton.isPressed) {
+			reelprogress -= ReelSpeed * Time.deltaTime;
+			reelprogress = Mathf.Clamp01(reelprogress);
+		} else {
+			reelprogress = 1;
+		}
+
+		float minDistance = ReelCurve.Evaluate(reelprogress);
 
 		float scroll = -Mouse.current.scroll.y.ReadValue();
 		zoomProgress += scroll * ZoomSpeed;
