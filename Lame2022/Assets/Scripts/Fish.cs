@@ -6,6 +6,7 @@ public class Fish : MonoBehaviour {
 
 	public Rigidbody2D rb;
 	public Vector2 speed;
+	public float velocityCap = 10f;
 	float spawntimer = 1;
 	// Start is called before the first frame update
 
@@ -16,6 +17,12 @@ public class Fish : MonoBehaviour {
 		rb.velocity = speed;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length - 1)];
+	}
+
+	private void FixedUpdate() {
+		if (rb.velocity.sqrMagnitude > velocityCap * velocityCap) {
+			rb.velocity = rb.velocity.normalized * velocityCap;
+		}
 	}
 
 	void Update() {
@@ -31,7 +38,9 @@ public class Fish : MonoBehaviour {
 		if (!collision.gameObject.CompareTag("fish")) return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
 		if (spawntimer < 0) {
-			Instantiate(this);
+		var fish= Instantiate(this,transform.parent);
+
+
 			spawntimer = 1;
 
 		}
