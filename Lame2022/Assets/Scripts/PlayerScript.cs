@@ -11,18 +11,22 @@ public class PlayerScript : MonoBehaviour {
 	public float lineSegmentLength = 10;
 
 	public Rigidbody2D hook;
+	public float HookVelocityCap = 10f;
 	public Transform Rod;
 	public Transform RodEnd;
 
 	[Space]
-	public Transform ZoomParent;
+	public Camera ZoomCamera;
 	public AnimationCurve ZoomCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-	[Range(.001f, 1f)]
-	public float ZoomOutMax = .1f;
+	public Vector2 ZoomRange = new Vector2(5, 20);
+	public float ZoomSpeed = .1f;
+	float zoomProgress = .5f;
 
 	[Range(0, 90)]
 	public float RodMaxAngle = 20;
+	float rodOldAngle = 0;
+
 	public float LinePointDistance = .5f;
 	public int LinePointCount = 20;
 	public float LineFloatRate = 1;
@@ -36,14 +40,29 @@ public class PlayerScript : MonoBehaviour {
 		for (int i = 0; i < LinePointCount; i++) {
 			hookPoints.Add(Vector3.up * 1 * .2f);
 		}
+
+		if (!ZoomCamera) ZoomCamera = Camera.main;
 	}
 
 	private void FixedUpdate() {
 		// make hook float upwards
-		hook.AddForce(Vector2.up, ForceMode2D.Force);
+		hook.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
+
+		// restrict max hook speed
+		if (hook.velocity.sqrMagnitude > HookVelocityCap * HookVelocityCap) {
+			hook.velocity = hook.velocity.normalized * HookVelocityCap;
+		}
+		// hook.velocity = Vector2.zero;
 	}
 
 	void Update() {
+
+		float scroll = -Mouse.current.scroll.y.ReadValue();
+		zoomProgress += scroll * ZoomSpeed;
+		zoomProgress = Mathf.Clamp01(zoomProgress);
+
+		float zoomEval = Mathf.Lerp(ZoomRange.x, ZoomRange.y, ZoomCurve.Evaluate(zoomProgress));
+		ZoomCamera.orthographicSize = zoomEval;
 
 		// moves mouse box/circle to mouse
 		Vector2 mouseposition = Pointer.current.position.ReadValue();
@@ -54,6 +73,7 @@ public class PlayerScript : MonoBehaviour {
 
 		// rotate fishing rod towards mouse
 		float rodNewAngle = Vector3.SignedAngle(Vector3.up, mouseboxposition - Rod.position, Vector3.back);
+		float rodDelta = rodNewAngle - rodOldAngle;
 		rodNewAngle = Mathf.Sign(rodNewAngle) * Mathf.Min(Mathf.Abs(rodNewAngle), RodMaxAngle);
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
@@ -89,7 +109,9 @@ public class PlayerScript : MonoBehaviour {
 			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
 			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
 			// flick hook if it was tugged
-			hook.AddForce(delta * LineWhipRate, ForceMode2D.Impulse);
+			if (Vector3.Angle(hook.velocity, delta) > 45)
+				hook.velocity = Vector2.zero;
+			hook.AddForce(-delta * Mathf.Abs(rodDelta) * LineWhipRate, ForceMode2D.Impulse);
 		}
 
 		// move player
@@ -122,9 +144,14 @@ public class PlayerScript : MonoBehaviour {
 		Vector3 lastPos = RodEnd.position;
 		line.spline.InsertPointAt(0, lastPos);
 		foreach (var item in hookPoints) {
-			if (Vector3.Distance(lastPos, item) > .1f)
+			// skips successive points in the same position
+			if (Vector3.Distance(lastPos, item) > .1f) {
 				line.spline.InsertPointAt(0, item);
-			lastPos = item;
+				lastPos = item;
+			}
+		}
+		if (Vector3.Distance(lastPos, hook.position) > .1f) {
+			line.spline.InsertPointAt(0, hook.position);
 		}
 
 		// wobble player
@@ -132,6 +159,8 @@ public class PlayerScript : MonoBehaviour {
 		// var scale = transform.localScale;
 		// scale.y = randomheight;
 		// transform.localScale = scale;
+
+		rodOldAngle = rodNewAngle;
 
 	}
 }
