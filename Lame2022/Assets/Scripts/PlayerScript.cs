@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -59,7 +59,7 @@ public class PlayerScript : MonoBehaviour {
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
 		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > LinePointDistance * .8f) {
-			hookPoints[hookPoints.Count - 1] = hook.position + (hookPoints[hookPoints.Count - 1] - hook.position).normalized * LinePointDistance;
+			hookPoints[hookPoints.Count - 1] = hook.position + (hookPoints[hookPoints.Count - 1] - hook.position).normalized * LinePointDistance * .8f;
 		}
 
 		for (int i = hookPoints.Count - 2; i >= 0; i--) {
