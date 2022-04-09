@@ -31,7 +31,7 @@ public class Fish : MonoBehaviour {
 		if (!collision.gameObject.CompareTag("fish"))return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
 		if (spawntimer < 0) {
-		Instantiate(this);
+		var fish= Instantiate(this,transform.parent);
 			spawntimer = 1;
 
 		}
