@@ -109,7 +109,8 @@ public class PlayerScript : MonoBehaviour {
 			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
 			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
 			// flick hook if it was tugged
-			hook.velocity = Vector2.zero;
+			if (Vector3.Angle(hook.velocity, delta) > 45)
+				hook.velocity = Vector2.zero;
 			hook.AddForce(-delta * Mathf.Abs(rodDelta) * LineWhipRate, ForceMode2D.Impulse);
 		}
 
