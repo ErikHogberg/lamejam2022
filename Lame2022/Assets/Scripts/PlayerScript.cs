@@ -15,11 +15,13 @@ public class PlayerScript : MonoBehaviour {
 	public Transform RodEnd;
 
 	[Space]
-	public Transform ZoomParent;
+	public Camera ZoomCamera;
 	public AnimationCurve ZoomCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
 	[Range(.001f, 1f)]
-	public float ZoomOutMax = .1f;
+	public Vector2 ZoomRange= new Vector2(5, 20);
+	public float ZoomSpeed = .1f;
+	float zoomProgress = .5f;
 
 	[Range(0, 90)]
 	public float RodMaxAngle = 20;
@@ -36,6 +38,8 @@ public class PlayerScript : MonoBehaviour {
 		for (int i = 0; i < LinePointCount; i++) {
 			hookPoints.Add(Vector3.up * 1 * .2f);
 		}
+
+		if (!ZoomCamera) ZoomCamera = Camera.main;
 	}
 
 	private void FixedUpdate() {
@@ -44,6 +48,16 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	void Update() {
+
+		float scroll = Mouse.current.scroll.y.ReadValue();
+		zoomProgress += scroll * ZoomSpeed;
+		zoomProgress = Mathf.Clamp01(zoomProgress);
+
+		float zoomEval = Mathf.Lerp(ZoomRange.x, ZoomRange.y, ZoomCurve.Evaluate(zoomProgress));
+		// Vector3 newScale = Vector3.one * Mathf.Lerp(ZoomRange.x, ZoomRange.y, ZoomCurve.Evaluate(zoomProgress));
+		// newScale.z = 1f;
+		// ZoomParent.transform.localScale = newScale;
+		ZoomCamera.orthographicSize = zoomEval;
 
 		// moves mouse box/circle to mouse
 		Vector2 mouseposition = Pointer.current.position.ReadValue();
