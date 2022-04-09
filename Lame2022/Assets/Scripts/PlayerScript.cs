@@ -18,12 +18,12 @@ public class PlayerScript : MonoBehaviour {
 	[Range(0, 90)]
 	public float RodMaxAngle = 20;
 	public float LinePointDistance = .5f;
-	public int LinePointCount= 20;
+	public int LinePointCount = 20;
 	public float LineFloatRate = 1;
 	public float LineWhipRate = 1;
 
 
-	List<Vector3> hookPoints = new List<Vector3>();
+	List<Vector2> hookPoints = new List<Vector2>();
 	// Vector3[] hookPoints = new Vector3[]{
 	// 	Vector3.up * 1,
 	// 	Vector3.up * 2,
@@ -36,6 +36,10 @@ public class PlayerScript : MonoBehaviour {
 		for (int i = 0; i < LinePointCount; i++) {
 			hookPoints.Add(Vector3.up * 1 * .2f);
 		}
+	}
+
+	private void FixedUpdate() {
+		hook.AddForce(Vector2.up);
 	}
 
 	void Update() {
@@ -57,9 +61,18 @@ public class PlayerScript : MonoBehaviour {
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
 		hookPoints[0] = RodEnd.position;
+
+		for (int i = hookPoints.Count - 2; i >= 0; i--) {
+			Vector3 prevPos = hookPoints[i + 1];
+			Vector3 oldPos = hookPoints[i];
+			if (Vector3.Distance(oldPos, prevPos) > LinePointDistance) {
+				hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
+			}
+		}
+
 		for (int i = 1; i < hookPoints.Count; i++) {
 
-			hookPoints[i] += Vector3.up * LineFloatRate * Time.deltaTime;
+			// hookPoints[i] += Vector3.up * LineFloatRate * Time.deltaTime;
 
 			Vector3 prevPos = hookPoints[i - 1];
 			Vector3 oldPos = hookPoints[i];
@@ -68,7 +81,12 @@ public class PlayerScript : MonoBehaviour {
 			}
 		}
 
-		hook.MovePosition(hookPoints[hookPoints.Count-1]);
+		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > LinePointDistance) {
+			// hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
+			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
+			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
+			hook.velocity = delta * LineWhipRate;
+		}
 		// TODO: only update hook when "tugged"
 		// TODO: tug line in reverse too, from hook (but prioritize rod)
 		// TODO: add velocity to hook when tugged by line
@@ -103,7 +121,7 @@ public class PlayerScript : MonoBehaviour {
 			lastPos = item;
 		}
 		// if (Vector3.Distance(lastPos, hook.position) > .1f)
-			// line.spline.InsertPointAt(0, hook.position);
+		// line.spline.InsertPointAt(0, hook.position);
 		//float randomheight =Random.RandomRange(0.8f, 1.2f);
 		// var scale = transform.localScale;
 		// scale.y = randomheight;
