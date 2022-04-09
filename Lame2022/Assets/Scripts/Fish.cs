@@ -28,11 +28,16 @@ public class Fish : MonoBehaviour {
 
 	}
 	private void OnCollisionEnter2D(Collision2D collision) {
+		if (!collision.gameObject.CompareTag("fish"))return;
+		collision.gameObject.GetComponent<Fish>().RestartTimer();
 		if (spawntimer < 0) {
 		Instantiate(this);
 			spawntimer = 1;
 
 		}
 		
+	}
+	public void RestartTimer() {
+		spawntimer = 1;
 	}
 }
