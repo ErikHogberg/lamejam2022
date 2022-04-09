@@ -14,6 +14,12 @@ public class PlayerScript : MonoBehaviour {
 	public Transform Rod;
 	public Transform RodEnd;
 
+	[Space]
+	public Transform ZoomParent;
+	public AnimationCurve ZoomCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+	[Range(.001f, 1f)]
+	public float ZoomOutMax = .1f;
 
 	[Range(0, 90)]
 	public float RodMaxAngle = 20;
@@ -24,44 +30,39 @@ public class PlayerScript : MonoBehaviour {
 
 
 	List<Vector2> hookPoints = new List<Vector2>();
-	// Vector3[] hookPoints = new Vector3[]{
-	// 	Vector3.up * 1,
-	// 	Vector3.up * 2,
-	// 	Vector3.up * 3,
-	// 	Vector3.up * 4,
-	// 	Vector3.up * 5,
-	// };
 
 	void Start() {
+		// subdivide fishing line
 		for (int i = 0; i < LinePointCount; i++) {
 			hookPoints.Add(Vector3.up * 1 * .2f);
 		}
 	}
 
 	private void FixedUpdate() {
+		// make hook float upwards
 		hook.AddForce(Vector2.up, ForceMode2D.Force);
 	}
 
 	void Update() {
 
-		float x = 0;
-		float y = 0;
-
+		// moves mouse box/circle to mouse
 		Vector2 mouseposition = Pointer.current.position.ReadValue();
 		var mouseboxposition = new Vector3(mouseposition.x, mouseposition.y, 0);
 		mouseboxposition = Camera.main.ScreenToWorldPoint(mouseboxposition);
 		mouseboxposition.z = 0;
 		mousebox.position = mouseboxposition;
 
+		// rotate fishing rod towards mouse
 		float rodNewAngle = Vector3.SignedAngle(Vector3.up, mouseboxposition - Rod.position, Vector3.back);
 		rodNewAngle = Mathf.Sign(rodNewAngle) * Mathf.Min(Mathf.Abs(rodNewAngle), RodMaxAngle);
-
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
+		// tug fishing line towards hook
 		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > LinePointDistance * .8f) {
 			hookPoints[hookPoints.Count - 1] = hook.position + (hookPoints[hookPoints.Count - 1] - hook.position).normalized * LinePointDistance * .8f;
 		}
 
+		// tug other parts of line in order towards fishing rod
 		for (int i = hookPoints.Count - 2; i >= 0; i--) {
 			Vector3 prevPos = hookPoints[i + 1];
 			Vector3 oldPos = hookPoints[i];
@@ -70,6 +71,7 @@ public class PlayerScript : MonoBehaviour {
 			}
 		}
 
+		// tug fishing line towards fishing rod
 		hookPoints[0] = RodEnd.position;
 		for (int i = 1; i < hookPoints.Count; i++) {
 
@@ -82,18 +84,18 @@ public class PlayerScript : MonoBehaviour {
 			}
 		}
 
+		// tug hook
 		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > LinePointDistance) {
-			// 	// hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
 			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
 			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
-			hook.velocity = delta * LineWhipRate;
-			// hook.MovePosition(hookPoints[hookPoints.Count - 1]);
+			// flick hook if it was tugged
+			hook.AddForce(delta * LineWhipRate, ForceMode2D.Impulse);
 		}
 
-
-		// TODO: only update hook when "tugged"
-		// TODO: tug line in reverse too, from hook (but prioritize rod)
-		// TODO: add velocity to hook when tugged by line
+		// move player
+		/*
+		float x = 0;
+		float y = 0;
 
 		if (Keyboard.current.wKey.isPressed) {
 			y += speed * Time.deltaTime;
@@ -113,19 +115,19 @@ public class PlayerScript : MonoBehaviour {
 		position.x += x;
 		position.y += y;
 		transform.position = position;
+		*/
 
+		// update fishing line graphics
 		line.spline.Clear();
 		Vector3 lastPos = RodEnd.position;
 		line.spline.InsertPointAt(0, lastPos);
-
 		foreach (var item in hookPoints) {
 			if (Vector3.Distance(lastPos, item) > .1f)
 				line.spline.InsertPointAt(0, item);
-
 			lastPos = item;
 		}
-		// if (Vector3.Distance(lastPos, hook.position) > .1f)
-		// line.spline.InsertPointAt(0, hook.position);
+
+		// wobble player
 		//float randomheight =Random.RandomRange(0.8f, 1.2f);
 		// var scale = transform.localScale;
 		// scale.y = randomheight;
