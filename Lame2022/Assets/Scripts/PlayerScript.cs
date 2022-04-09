@@ -23,17 +23,22 @@ public class PlayerScript : MonoBehaviour {
 	public float ZoomSpeed = .1f;
 	float zoomProgress = .5f;
 
-	[Range(0, 90)]
+	[Range(0, 180)]
 	public float RodMaxAngle = 20;
 	float rodOldAngle = 0;
+	Vector3 rodEndOldPos = Vector3.zero;
 
 	public float LinePointDistance = .5f;
+	public float LineMinPointDistance = .5f;
+	public float MaxBendPerSec = 30f;
 	public int LinePointCount = 20;
 	public float LineFloatRate = 1;
 	public float LineWhipRate = 1;
 
 
 	List<Vector2> hookPoints = new List<Vector2>();
+
+	Vector2 avgRodVelocity = Vector2.zero;
 
 	void Start() {
 		// subdivide fishing line
@@ -73,7 +78,8 @@ public class PlayerScript : MonoBehaviour {
 
 		// rotate fishing rod towards mouse
 		float rodNewAngle = Vector3.SignedAngle(Vector3.up, mouseboxposition - Rod.position, Vector3.back);
-		float rodDelta = rodNewAngle - rodOldAngle;
+		Vector2 rodDeltaPos = RodEnd.position - rodEndOldPos;
+		float rodDelta = rodDeltaPos.magnitude; //rodNewAngle - rodOldAngle;
 		rodNewAngle = Mathf.Sign(rodNewAngle) * Mathf.Min(Mathf.Abs(rodNewAngle), RodMaxAngle);
 		Rod.rotation = Quaternion.AngleAxis(rodNewAngle, Vector3.back);
 
@@ -97,11 +103,29 @@ public class PlayerScript : MonoBehaviour {
 
 			// hookPoints[i] += Vector3.up * LineFloatRate * Time.deltaTime;
 
-			Vector3 prevPos = hookPoints[i - 1];
-			Vector3 oldPos = hookPoints[i];
-			if (Vector3.Distance(oldPos, prevPos) > LinePointDistance) {
+			Vector2 prevPos = hookPoints[i - 1];
+			Vector2 oldPos = hookPoints[i];
+			Vector2 oldDelta = oldPos - prevPos;
+			float deltaDistance = Vector3.Distance(oldPos, prevPos);
+			if (deltaDistance > LinePointDistance) {
 				hookPoints[i] = prevPos + (oldPos - prevPos).normalized * LinePointDistance;
+			} else if (deltaDistance < LineMinPointDistance) {
+				Vector2 normalizedDelta = (oldPos - prevPos).normalized;
+				if (normalizedDelta == Vector2.zero) normalizedDelta = Vector3.one;
+				hookPoints[i] = prevPos + normalizedDelta * LineMinPointDistance;
 			}
+
+			Vector2 newDelta = hookPoints[i] - prevPos;
+
+			if (newDelta == Vector2.zero || oldDelta == Vector2.zero) continue;
+
+			float angleDiff = Vector2.SignedAngle(oldDelta, newDelta);
+
+			float maxAngle = MaxBendPerSec * Time.deltaTime;
+			if (Mathf.Abs(angleDiff) > maxAngle) {
+				hookPoints[i] = prevPos + Rotate(oldDelta, Mathf.Sign(angleDiff) * maxAngle);
+			}
+
 		}
 
 		// tug hook
@@ -109,9 +133,12 @@ public class PlayerScript : MonoBehaviour {
 			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
 			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * LinePointDistance);
 			// flick hook if it was tugged
-			if (Vector3.Angle(hook.velocity, delta) > 45)
+			if (Vector3.Angle(hook.velocity, delta) < 45)
 				hook.velocity = Vector2.zero;
-			hook.AddForce(-delta * Mathf.Abs(rodDelta) * LineWhipRate, ForceMode2D.Impulse);
+
+			Vector2 newVelocity = -delta * Mathf.Abs(rodDelta) * LineWhipRate;
+			avgRodVelocity = (avgRodVelocity + newVelocity) / 2;
+			hook.AddForce(avgRodVelocity, ForceMode2D.Impulse);
 		}
 
 		// move player
@@ -160,7 +187,12 @@ public class PlayerScript : MonoBehaviour {
 		// scale.y = randomheight;
 		// transform.localScale = scale;
 
+		rodEndOldPos = RodEnd.position;
 		rodOldAngle = rodNewAngle;
 
+	}
+
+	public static Vector2 Rotate(Vector2 vector, float angle) {
+		return Quaternion.Euler(0, 0, angle) * vector;
 	}
 }

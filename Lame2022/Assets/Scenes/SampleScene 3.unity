@@ -860,7 +860,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: ae2593349ec67de4ab8710cf8e3acb35, type: 3}
   m_Color: {r: 0.9811321, g: 0.5537607, b: 0.041651815, a: 1}
   m_FlipX: 0
@@ -1897,7 +1897,7 @@ MonoBehaviour:
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
-  m_SpriteShape: {fileID: 11400000, guid: f24cddf7c09a6442abbce710a6fd7397, type: 2}
+  m_SpriteShape: {fileID: 11400000, guid: 1266e61c7a84e6f40850d03ad313927a, type: 2}
   m_FillPixelPerUnit: 256
   m_StretchTiling: 1
   m_SplineDetail: 16
@@ -1980,7 +1980,7 @@ Transform:
   m_GameObject: {fileID: 1651335379}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.06869376, y: 0.28444007, z: 81.750725}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: -1}
   m_Children: []
   m_Father: {fileID: 729574538}
   m_RootOrder: 3
@@ -2172,7 +2172,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: 6d6ceaf322afbee49abcc9e70eafc095, type: 3}
   m_Color: {r: 0.3066038, g: 1, b: 0.5208804, a: 1}
   m_FlipX: 0
@@ -2389,8 +2389,10 @@ MonoBehaviour:
     m_RotationOrder: 4
   ZoomRange: {x: 5, y: 15}
   ZoomSpeed: 0.001
-  RodMaxAngle: 60
+  RodMaxAngle: 144.3
   LinePointDistance: 0.5
+  LineMinPointDistance: 0.5
+  MaxBendPerSec: 1
   LinePointCount: 20
   LineFloatRate: 1
   LineWhipRate: 10
