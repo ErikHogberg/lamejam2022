@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour {
 	public float lineSegmentLength = 10;
 
 	public Rigidbody2D hook;
+	public float HookVelocityCap = 10f;
 	public Transform Rod;
 	public Transform RodEnd;
 
@@ -18,8 +19,7 @@ public class PlayerScript : MonoBehaviour {
 	public Camera ZoomCamera;
 	public AnimationCurve ZoomCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-	[Range(.001f, 1f)]
-	public Vector2 ZoomRange= new Vector2(5, 20);
+	public Vector2 ZoomRange = new Vector2(5, 20);
 	public float ZoomSpeed = .1f;
 	float zoomProgress = .5f;
 
@@ -44,19 +44,19 @@ public class PlayerScript : MonoBehaviour {
 
 	private void FixedUpdate() {
 		// make hook float upwards
-		hook.AddForce(Vector2.up, ForceMode2D.Force);
+		// hook.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
+		if (hook.velocity.sqrMagnitude > HookVelocityCap * HookVelocityCap) {
+			hook.velocity = hook.velocity.normalized * HookVelocityCap;
+		}
 	}
 
 	void Update() {
 
-		float scroll = Mouse.current.scroll.y.ReadValue();
+		float scroll = -Mouse.current.scroll.y.ReadValue();
 		zoomProgress += scroll * ZoomSpeed;
 		zoomProgress = Mathf.Clamp01(zoomProgress);
 
 		float zoomEval = Mathf.Lerp(ZoomRange.x, ZoomRange.y, ZoomCurve.Evaluate(zoomProgress));
-		// Vector3 newScale = Vector3.one * Mathf.Lerp(ZoomRange.x, ZoomRange.y, ZoomCurve.Evaluate(zoomProgress));
-		// newScale.z = 1f;
-		// ZoomParent.transform.localScale = newScale;
 		ZoomCamera.orthographicSize = zoomEval;
 
 		// moves mouse box/circle to mouse
