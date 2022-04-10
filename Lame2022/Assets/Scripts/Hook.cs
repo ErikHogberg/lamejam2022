@@ -27,6 +27,8 @@ public class Hook : MonoBehaviour {
 		fish.rb.velocity = Vector2.zero;
 		rb.velocity = Vector2.zero;
 
+		FindObjectOfType<AudioManager>().Play("FishHooked");
+
 	}
 
 	public void CatchFish() {
