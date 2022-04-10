@@ -30,7 +30,7 @@ public class Fish : MonoBehaviour {
 
 	private void OnDestroy() {
 		allFish.Remove(this);
-		if (allFish.Count > 2) {
+		if (allFish.Count < 2) {
 			menuStart.MainInstance.GameOverScreen();
 		}
 	}
