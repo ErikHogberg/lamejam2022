@@ -120,10 +120,14 @@ public class PlayerScript : MonoBehaviour {
 
 		bool queuedSend = false;
 		// if (kbd.spaceKey.isPressed) {
-		if (mouse.leftButton.isPressed) {
+		//if (mouse.leftButton.isPressed) {
+		if (mouse.leftButton.wasPressedThisFrame) {
 			reelIn = true;
+			FindObjectOfType<AudioManager>().Play("LineReel");
 			//avgRodVelocity =Vector2.zero;
-		} else {
+		} //else {
+			if (mouse.leftButton.wasReleasedThisFrame)
+			{
 			// if (kbd.spaceKey.wasReleasedThisFrame) {
 			reelIn = false;
 			queuedSend = true;

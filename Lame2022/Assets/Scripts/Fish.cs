@@ -12,6 +12,7 @@ public class Fish : MonoBehaviour {
 	public Vector2 speed;
 	public float velocityCap = 10f;
 	float spawntimer = 1;
+
 	// Start is called before the first frame update
 	public bool CanSpawn => spawntimer <= 0;
 
@@ -57,6 +58,12 @@ public class Fish : MonoBehaviour {
 
 		}
 		spawntimer -= Time.deltaTime;
+
+		if (AllFish.Count == 20) {
+			
+			var bgMusic = GameObject.Find("BgMusic").GetComponent<LoopBGM>() ;
+			bgMusic.SwapMusic();
+		}
 
 		birdSpawnTimer -= Time.deltaTime;
 		if (birdSpawnTimer < 0) {

@@ -15,12 +15,17 @@ public class menuStart : MonoBehaviour
 	public UnityEvent StartEvent;
 	public UnityEvent GameOverEvent;
 
+	public AudioClip musicStart;
+	public AudioClip musicLoop;
+
+
 	void Start()
     {
 		MainInstance = this;
 		startMenu.SetActive(true);
 		StartEvent.Invoke();
-    }
+	
+	}
 
 	private void OnDestroy() {
 		if(MainInstance == this) MainInstance = null;
@@ -35,5 +40,6 @@ public class menuStart : MonoBehaviour
 	{
 		gameOverMenu.SetActive(true);
 		GameOverEvent.Invoke();
+
 	}
 }
