@@ -12,6 +12,7 @@ public class Fish : MonoBehaviour {
 	public Vector2 speed;
 	public float velocityCap = 10f;
 	float spawntimer = 1;
+
 	// Start is called before the first frame update
 
 	public Sprite[] sprites;
@@ -48,11 +49,19 @@ public class Fish : MonoBehaviour {
 		}
 		spawntimer -= Time.deltaTime;
 
+		if (AllFish.Count == 20) {
+			
+			var bgMusic = GameObject.Find("BgMusic").GetComponent<LoopBGM>() ;
+			bgMusic.SwapMusic();
+		}
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!collision.gameObject.CompareTag("fish")) return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
+
+
+
 		if (spawntimer < 0 && AllFish.Count < Limit) {
 			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
