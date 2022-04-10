@@ -57,6 +57,9 @@ public class PlayerScript : MonoBehaviour {
 	Vector2 avgRodVelocity = Vector2.zero;
 	float reelprogress = 1;
 
+	Mouse mouse;
+	Keyboard kbd;
+
 	void Start() {
 		// subdivide fishing line
 		for (int i = 0; i < LinePointCount; i++) {
@@ -66,6 +69,10 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 		if (!ZoomCamera) ZoomCamera = Camera.main;
+
+		mouse = Mouse.current;
+		kbd = Keyboard.current;
+		
 	}
 
 	private void FixedUpdate() {
@@ -84,7 +91,7 @@ public class PlayerScript : MonoBehaviour {
 
 
 
-		float scroll = -Mouse.current.scroll.y.ReadValue();
+		float scroll = -mouse.scroll.y.ReadValue();
 		zoomProgress += scroll * ZoomSpeed;
 		zoomProgress = Mathf.Clamp01(zoomProgress);
 
@@ -109,11 +116,11 @@ public class PlayerScript : MonoBehaviour {
 		// FIXME: reelprogress resets each frame, left button pressed and released simultanously?
 
 		bool queuedSend = false;
-		if (Mouse.current.leftButton.isPressed) {
+		if (mouse.leftButton.isPressed) {
 			reelIn = true;
 			//avgRodVelocity =Vector2.zero;
 		} else
-		if (Mouse.current.leftButton.wasReleasedThisFrame) {
+		if (mouse.leftButton.wasReleasedThisFrame) {
 			reelIn = false;
 			queuedSend = true;
 			// hook.velocity = rodDeltaPos * LineWhipRate * Time.deltaTime;
@@ -227,17 +234,17 @@ public class PlayerScript : MonoBehaviour {
 		float x = 0;
 		float y = 0;
 
-		if (Keyboard.current.wKey.isPressed) {
+		if (kbd.wKey.isPressed) {
 			y += speed * Time.deltaTime;
 			hook.AddForce(Vector2.up * 10);
 		}
-		if (Keyboard.current.aKey.isPressed) {
+		if (kbd.aKey.isPressed) {
 			x -= speed * Time.deltaTime;
 		}
-		if (Keyboard.current.sKey.isPressed) {
+		if (kbd.sKey.isPressed) {
 			y -= speed * Time.deltaTime;
 		}
-		if (Keyboard.current.dKey.isPressed) {
+		if (kbd.dKey.isPressed) {
 			x += speed * Time.deltaTime;
 		}
 
