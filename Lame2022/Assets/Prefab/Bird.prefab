@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  FlyInSpeed: 100
+  FlyInSpeed: 70
   FlyOutSpeed: 200
   DespawnTime: 5
 --- !u!50 &4928340324104660923

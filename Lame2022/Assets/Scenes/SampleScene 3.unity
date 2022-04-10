@@ -2021,7 +2021,7 @@ SpriteShapeRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -2662,7 +2662,7 @@ MonoBehaviour:
   lineSegmentLength: 10
   hook: {fileID: 1862713738}
   hookRigidbody: {fileID: 1862713734}
-  HookVelocityCap: 10
+  HookVelocityCap: 15
   Rod: {fileID: 303758428}
   RodEnd: {fileID: 1860087595}
   ZoomCamera: {fileID: 519420031}
@@ -2694,8 +2694,8 @@ MonoBehaviour:
   ZoomSpeed: 0.001
   RodMaxAngle: 60
   ReeledMul: 0.096
-  ReelSpeed: 1.2
-  InstantReelThreshold: 2
+  ReelSpeed: 1.5
+  InstantReelThreshold: 1
   ReelCurve:
     serializedVersion: 2
     m_Curve:
@@ -2720,12 +2720,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  LinePointDistance: 0.4
+  LinePointDistance: 0.5
   LineMinPointDistance: 0.2
   LinePointCount: 50
   HookFloatRate: 1
   LineFloatRate: 3
-  LineWhipRate: 10000000
+  LineWhipRate: 100000000
 --- !u!1001 &4928340324247581550
 PrefabInstance:
   m_ObjectHideFlags: 0

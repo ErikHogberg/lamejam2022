@@ -13,6 +13,7 @@ public class Fish : MonoBehaviour {
 	public float velocityCap = 10f;
 	float spawntimer = 1;
 	// Start is called before the first frame update
+	public bool CanSpawn => spawntimer <= 0;
 
 	public Sprite[] sprites;
 	SpriteRenderer spriteRenderer;
@@ -58,8 +59,8 @@ public class Fish : MonoBehaviour {
 		spawntimer -= Time.deltaTime;
 
 		birdSpawnTimer -= Time.deltaTime;
-		if(birdSpawnTimer < 0){
-			Bird.Spawn(BirdPrefab, this, Camera.main.ViewportToWorldPoint(Vector3.one * 1.2f));
+		if (birdSpawnTimer < 0) {
+			Bird.Spawn(BirdPrefab, this, Camera.main.ViewportToWorldPoint(Vector3.one * -1.2f));
 			birdSpawnTimer = nextBirdSpawnTime;
 		}
 
@@ -68,13 +69,20 @@ public class Fish : MonoBehaviour {
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!collision.gameObject.CompareTag("fish")) return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
-		if (spawntimer < 0 && AllFish.Count < Limit) {
-			var fish = Instantiate(this, transform.parent);
-			spawntimer = 1;
-		FindObjectOfType<AudioManager>().Play("FishCollision");
-		}
+		SpawnFish();
 
 	}
+
+	public void SpawnFish(Transform parent = null) {
+		if (spawntimer < 0 && AllFish.Count < Limit) {
+			var fish = Instantiate(this, transform.parent);//transform.position, Quaternion.identity, transform.root);
+			// fish.transform.localScale = transform.lossyScale;
+			if(parent) fish.transform.parent = transform;
+			spawntimer = 1;
+			FindObjectOfType<AudioManager>().Play("FishCollision");
+		}
+	}
+
 	public void RestartTimer() {
 		spawntimer = 1;
 	}

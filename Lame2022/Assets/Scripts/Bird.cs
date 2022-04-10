@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour {
 
-	const int Limit = 6;
+	const int Limit = 4;
 
 	public static List<Bird> AllBirds = new List<Bird>();
 	public static int BirdCount => AllBirds.Count;
@@ -25,7 +25,7 @@ public class Bird : MonoBehaviour {
 	public float FlyOutSpeed = 2;
 
 	public float DespawnTime = 5;
-	float despawnTimer = float.MaxValue;
+	float despawnTimer = 3;//float.MaxValue;
 
 	public static void Spawn(Bird birdToSpawn, Fish target, Vector2 where) {
 		if (!CanSpawn) return;
