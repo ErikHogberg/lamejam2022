@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Fish : MonoBehaviour {
 
+
+	const int Limit = 30;
+
 	public Rigidbody2D rb;
+	public Collider2D fishCollider;
 	public Vector2 speed;
 	public float velocityCap = 10f;
 	float spawntimer = 1;
@@ -13,10 +17,22 @@ public class Fish : MonoBehaviour {
 	public Sprite[] sprites;
 	SpriteRenderer spriteRenderer;
 
+	static List<Fish> allFish = new List<Fish>();
+
 	void Start() {
+
+		allFish.Add(this);
+
 		rb.velocity = speed;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length - 1)];
+	}
+
+	private void OnDestroy() {
+		allFish.Remove(this);
+		if (allFish.Count < 2) {
+			menuStart.MainInstance.GameOverScreen();
+		}
 	}
 
 	private void FixedUpdate() {
@@ -33,16 +49,13 @@ public class Fish : MonoBehaviour {
 		spawntimer -= Time.deltaTime;
 
 	}
-	
+
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!collision.gameObject.CompareTag("fish")) return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
-		if (spawntimer < 0) {
-		var fish= Instantiate(this,transform.parent);
-
-
+		if (spawntimer < 0 && allFish.Count < Limit) {
+			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
-
 		}
 
 	}
