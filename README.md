@@ -26,8 +26,8 @@ Tip! Let the fish collide for them to multiply.
 
 # Credits:
 
-Lukas Lundin - Art
-Ruben Pérez Avalos - Sound design / SFX
-Barbara Kubitzek - Sound Design / Music
-Nikita Lysenko - Programming / Animation 
-Erik Högberg  - Programming
+* Lukas Lundin - Art
+* Ruben Pérez Avalos - Sound design / SFX
+* Barbara Kubitzek - Sound Design / Music
+* Nikita Lysenko - Programming / Animation 
+* Erik Högberg  - Programming
