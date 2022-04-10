@@ -17,6 +17,12 @@ public class Fish : MonoBehaviour {
 	public Sprite[] sprites;
 	SpriteRenderer spriteRenderer;
 
+	[Space]
+	public Bird BirdPrefab;
+	public float BirdSpawnDelay = 10;
+	float birdSpawnTimer = float.MaxValue;
+	float nextBirdSpawnTime => Random.RandomRange(.8f, 1.2f) * BirdSpawnDelay;
+
 	public static List<Fish> AllFish = new List<Fish>();
 
 	void Start() {
@@ -26,6 +32,8 @@ public class Fish : MonoBehaviour {
 		rb.velocity = speed;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length - 1)];
+
+		birdSpawnTimer = nextBirdSpawnTime;
 	}
 
 	private void OnDestroy() {
@@ -48,6 +56,12 @@ public class Fish : MonoBehaviour {
 
 		}
 		spawntimer -= Time.deltaTime;
+
+		birdSpawnTimer -= Time.deltaTime;
+		if(birdSpawnTimer < 0){
+			Bird.Spawn(BirdPrefab, this, Camera.main.ViewportToWorldPoint(Vector3.one * 1.2f));
+			birdSpawnTimer = nextBirdSpawnTime;
+		}
 
 	}
 
