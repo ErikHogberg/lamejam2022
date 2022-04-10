@@ -14,10 +14,22 @@ public class Fish : MonoBehaviour {
 	public Sprite[] sprites;
 	SpriteRenderer spriteRenderer;
 
+	static List<Fish> allFish = new List<Fish>();
+
 	void Start() {
+
+		allFish.Add(this);
+
 		rb.velocity = speed;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length - 1)];
+	}
+
+	private void OnDestroy() {
+		allFish.Remove(this);
+		if(allFish.Count > 2){
+			// TODO: game over
+		}
 	}
 
 	private void FixedUpdate() {
