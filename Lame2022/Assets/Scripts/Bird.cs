@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour {
 
-	const int Limit = 10;
+	const int Limit = 6;
 
 	public static List<Bird> AllBirds = new List<Bird>();
 	public static int BirdCount => AllBirds.Count;
@@ -56,22 +56,23 @@ public class Bird : MonoBehaviour {
 			rb.angularVelocity = 0;
 		} else {
 			despawnTimer -= Time.fixedDeltaTime;
-			if(despawnTimer < 0f) {
+			if (despawnTimer < 0f) {
 				Destroy(gameObject);
 				Debug.Log("despawned bird");
 				return;
 			}
-			
+
 			Vector2 dir = (cam.WorldToViewportPoint(transform.position) - Vector3.one * .5f).normalized;
 			rb.velocity = dir * FlyOutSpeed;
-			
+
 		}
 	}
 
-	private void OnCollisionEnter(Collision other) {
+	private void OnCollisionEnter2D(Collision2D other) {
 		if (flyingOut && !holdingFish) return;
 
 		if (other.gameObject.CompareTag("Player")) {
+			Debug.Log("player hit bird");
 			// rb.isKinematic = false;
 			flyingOut = true;
 			despawnTimer = DespawnTime;
@@ -83,6 +84,7 @@ public class Bird : MonoBehaviour {
 			}
 		} else
 		if (!holdingFish && other.gameObject.CompareTag("fish")) {
+			Debug.Log("bird grabbed fish");
 			flyingOut = true;
 			holdingFish = true;
 			Fish fish = other.gameObject.GetComponent<Fish>();
