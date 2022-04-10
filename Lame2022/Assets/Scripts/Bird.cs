@@ -68,7 +68,7 @@ public class Bird : MonoBehaviour {
 		}
 	}
 
-	private void OnCollisionEnter(Collision other) {
+	private void OnCollisionEnter2D(Collision2D other) {
 		if (flyingOut && !holdingFish) return;
 
 		if (other.gameObject.CompareTag("Player")) {

@@ -21,7 +21,7 @@ public class Fish : MonoBehaviour {
 	public Bird BirdPrefab;
 	public float BirdSpawnDelay = 10;
 	float birdSpawnTimer = float.MaxValue;
-	float nextBirdSpawnTime => Random.RandomRange(.8f, 1.2f) * BirdSpawnDelay;
+	float nextBirdSpawnTime => Random.Range(.8f, 1.2f) * BirdSpawnDelay;
 
 	public static List<Fish> AllFish = new List<Fish>();
 
