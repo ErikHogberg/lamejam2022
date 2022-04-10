@@ -57,6 +57,7 @@ public class Fish : MonoBehaviour {
 			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
 		}
+		FindObjectOfType<AudioManager>().Play("FishCollision");
 
 	}
 	public void RestartTimer() {
