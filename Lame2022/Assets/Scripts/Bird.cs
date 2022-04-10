@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour {
 
-	const int Limit = 10;
+	const int Limit = 6;
 
 	public static List<Bird> AllBirds = new List<Bird>();
 	public static int BirdCount => AllBirds.Count;
 	public static bool CanSpawn => BirdCount < Limit;
 
 
-	private Fish target;
+	public Fish target;
 	bool flyingOut = false;
 	bool holdingFish = false;
 
@@ -19,8 +19,13 @@ public class Bird : MonoBehaviour {
 
 	Camera cam;
 
-	public Vector2 FlyInSpeed;
-	public Vector2 FlyOutSpeed;
+	[Min(0)]
+	public float FlyInSpeed = 1;
+	[Min(0)]
+	public float FlyOutSpeed = 2;
+
+	public float DespawnTime = 5;
+	float despawnTimer = float.MaxValue;
 
 	public static void Spawn(Bird birdToSpawn, Fish target, Vector2 where) {
 		if (!CanSpawn) return;
@@ -45,25 +50,47 @@ public class Bird : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
-		if (!flyingOut) {
-
+		if (!flyingOut && target) {
+			Vector2 targetDir = (target.transform.position - transform.position).normalized;
+			rb.velocity = targetDir * FlyInSpeed;
+			rb.angularVelocity = 0;
 		} else {
+			despawnTimer -= Time.fixedDeltaTime;
+			if (despawnTimer < 0f) {
+				Destroy(gameObject);
+				Debug.Log("despawned bird");
+				return;
+			}
+
+			Vector2 dir = (cam.WorldToViewportPoint(transform.position) - Vector3.one * .5f).normalized;
+			rb.velocity = dir * FlyOutSpeed;
 
 		}
 	}
 
-	private void OnCollisionEnter(Collision other) {
+	private void OnCollisionEnter2D(Collision2D other) {
 		if (flyingOut && !holdingFish) return;
 
-		if (other.gameObject.CompareTag("player")) {
+		if (other.gameObject.CompareTag("Player")) {
+			Debug.Log("player hit bird");
 			// rb.isKinematic = false;
 			flyingOut = true;
+			despawnTimer = DespawnTime;
 			rb.angularVelocity = 100f;
+			if (holdingFish) {
+				target.rb.isKinematic = false;
+				target.fishCollider.enabled = true;
+				target.transform.parent = transform.parent;
+				
+			}
 		} else
 		if (!holdingFish && other.gameObject.CompareTag("fish")) {
+			Debug.Log("bird grabbed fish");
+			FindObjectOfType<AudioManager>().Play("SeagullSteal");
 			flyingOut = true;
 			holdingFish = true;
 			Fish fish = other.gameObject.GetComponent<Fish>();
+			if (target != fish) target = fish;
 			fish.rb.isKinematic = true;
 			fish.fishCollider.enabled = false;
 			fish.transform.parent = transform;

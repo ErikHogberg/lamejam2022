@@ -18,6 +18,12 @@ public class Fish : MonoBehaviour {
 	public Sprite[] sprites;
 	SpriteRenderer spriteRenderer;
 
+	[Space]
+	public Bird BirdPrefab;
+	public float BirdSpawnDelay = 10;
+	float birdSpawnTimer = float.MaxValue;
+	float nextBirdSpawnTime => Random.Range(.8f, 1.2f) * BirdSpawnDelay;
+
 	public static List<Fish> AllFish = new List<Fish>();
 
 	void Start() {
@@ -27,12 +33,15 @@ public class Fish : MonoBehaviour {
 		rb.velocity = speed;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length - 1)];
+
+		birdSpawnTimer = nextBirdSpawnTime;
 	}
 
 	private void OnDestroy() {
 		AllFish.Remove(this);
 		if (AllFish.Count < 1) {
-			menuStart.MainInstance.GameOverScreen();
+			if (menuStart.MainInstance)
+				menuStart.MainInstance.GameOverScreen();
 		}
 	}
 
@@ -54,6 +63,13 @@ public class Fish : MonoBehaviour {
 			var bgMusic = GameObject.Find("BgMusic").GetComponent<LoopBGM>() ;
 			bgMusic.SwapMusic();
 		}
+
+		birdSpawnTimer -= Time.deltaTime;
+		if(birdSpawnTimer < 0){
+			Bird.Spawn(BirdPrefab, this, Camera.main.ViewportToWorldPoint(Vector3.one * 1.2f));
+			birdSpawnTimer = nextBirdSpawnTime;
+		}
+
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision) {
@@ -65,6 +81,7 @@ public class Fish : MonoBehaviour {
 		if (spawntimer < 0 && AllFish.Count < Limit) {
 			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
+		FindObjectOfType<AudioManager>().Play("FishCollision");
 		}
 
 	}

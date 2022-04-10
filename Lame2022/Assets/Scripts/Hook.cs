@@ -16,6 +16,8 @@ public class Hook : MonoBehaviour {
 	private void OnCollisionEnter2D(Collision2D other) {
 		if (fish || !other.gameObject.CompareTag("fish")) return;
 
+		// FIXME: occasionally hooks 2 fish
+
 		fish= other.gameObject.GetComponent<Fish>();
 		fish.fishCollider.enabled = false;
 		fish.rb.isKinematic = true;
@@ -24,6 +26,8 @@ public class Hook : MonoBehaviour {
 		
 		fish.rb.velocity = Vector2.zero;
 		rb.velocity = Vector2.zero;
+
+		FindObjectOfType<AudioManager>().Play("FishHooked");
 
 	}
 

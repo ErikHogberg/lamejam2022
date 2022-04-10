@@ -49,6 +49,7 @@ public class PlayerScript : MonoBehaviour {
 
 	[Min(3)]
 	public int LinePointCount = 20;
+	public float HookFloatRate = 1;
 	public float LineFloatRate = 1;
 	public float LineWhipRate = 1;
 
@@ -80,7 +81,7 @@ public class PlayerScript : MonoBehaviour {
 
 	private void FixedUpdate() {
 		// make hook float upwards
-		hookRigidbody.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
+		hookRigidbody.AddForce(Vector2.up * HookFloatRate, ForceMode2D.Force);
 
 		// restrict max hook speed
 		if (hookRigidbody.velocity.sqrMagnitude > HookVelocityCap * HookVelocityCap) {
@@ -119,10 +120,14 @@ public class PlayerScript : MonoBehaviour {
 
 		bool queuedSend = false;
 		// if (kbd.spaceKey.isPressed) {
-		if (mouse.leftButton.isPressed) {
+		//if (mouse.leftButton.isPressed) {
+		if (mouse.leftButton.wasPressedThisFrame) {
 			reelIn = true;
+			FindObjectOfType<AudioManager>().Play("LineReel");
 			//avgRodVelocity =Vector2.zero;
-		} else {
+		} //else {
+			if (mouse.leftButton.wasReleasedThisFrame)
+			{
 			// if (kbd.spaceKey.wasReleasedThisFrame) {
 			reelIn = false;
 			queuedSend = true;
@@ -144,7 +149,7 @@ public class PlayerScript : MonoBehaviour {
 			reelprogress = 1;
 		}
 
-		DebugText.SetText($"reel: {reelprogress.ToString("0.00")}, {reelIn}");
+		// DebugText.SetText($"reel: {reelprogress.ToString("0.00")}, {reelIn}");
 		float reelprogressLerp = Mathf.Lerp(ReeledMul, 1, ReelCurve.Evaluate(reelprogress));
 
 
@@ -169,6 +174,9 @@ public class PlayerScript : MonoBehaviour {
 		// tug fishing line towards fishing rod
 		hookPoints[0] = RodEnd.position;
 		for (int i = 1; i < hookPoints.Count; i++) {
+
+			if (i < hookPoints.Count - 1)
+				hookPoints[i + 1] += Vector2.up * LineFloatRate * Time.deltaTime;
 
 			// hookPoints[i] += Vector3.up * LineFloatRate * Time.deltaTime;
 

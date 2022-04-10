@@ -27,6 +27,10 @@ public class menuStart : MonoBehaviour
 	
 	}
 
+	private void OnDestroy() {
+		if(MainInstance == this) MainInstance = null;
+	}
+
 	public void RestartGame() 
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name); // loads current scene
