@@ -16,7 +16,7 @@ public class menuStart : MonoBehaviour
 	public UnityEvent GameOverEvent;
 
 	void Start()
-    {		
+    {
 		MainInstance = this;
 		startMenu.SetActive(true);
 		StartEvent.Invoke();

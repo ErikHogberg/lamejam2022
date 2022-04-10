@@ -17,5 +17,6 @@ public class Score : MonoBehaviour {
 		if(!mainInstance) return;
 		mainInstance.currentScore += score;
 		mainInstance.scoreText.text = mainInstance.currentScore.ToString();
+		FindObjectOfType<AudioManager>().Play("FishCaught");
 	}
 }
