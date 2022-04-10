@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fish : MonoBehaviour {
 
 	public Rigidbody2D rb;
+	public Collider2D fishCollider;
 	public Vector2 speed;
 	public float velocityCap = 10f;
 	float spawntimer = 1;

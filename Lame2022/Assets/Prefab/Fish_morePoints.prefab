@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 2939369738897668225}
+  fishCollider: {fileID: 2939369739147568628}
   speed: {x: 2, y: 1}
   velocityCap: 10
   sprites:
