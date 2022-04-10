@@ -11,7 +11,8 @@ public class PlayerScript : MonoBehaviour {
 	public SpriteShapeController line;
 	public float lineSegmentLength = 10;
 
-	public Rigidbody2D hook;
+	public Hook hook;
+	public Rigidbody2D hookRigidbody;
 	public float HookVelocityCap = 10f;
 	public Transform Rod;
 	public Transform RodEnd;
@@ -69,11 +70,11 @@ public class PlayerScript : MonoBehaviour {
 
 	private void FixedUpdate() {
 		// make hook float upwards
-		hook.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
+		hookRigidbody.AddForce(Vector2.up * LineFloatRate, ForceMode2D.Force);
 
 		// restrict max hook speed
-		if (hook.velocity.sqrMagnitude > HookVelocityCap * HookVelocityCap) {
-			hook.velocity = hook.velocity.normalized * HookVelocityCap;
+		if (hookRigidbody.velocity.sqrMagnitude > HookVelocityCap * HookVelocityCap) {
+			hookRigidbody.velocity = hookRigidbody.velocity.normalized * HookVelocityCap;
 		}
 		// hook.velocity = Vector2.zero;
 	}
@@ -108,9 +109,9 @@ public class PlayerScript : MonoBehaviour {
 		// FIXME: reelprogress resets each frame, left button pressed and released simultanously?
 
 		bool queuedSend = false;
-		if (Mouse.current.leftButton.wasPressedThisFrame) { 
-			reelIn = true; 
-			avgRodVelocity =Vector2.zero;
+		if (Mouse.current.leftButton.isPressed) {
+			reelIn = true;
+			//avgRodVelocity =Vector2.zero;
 		} else
 		if (Mouse.current.leftButton.wasReleasedThisFrame) {
 			reelIn = false;
@@ -122,8 +123,10 @@ public class PlayerScript : MonoBehaviour {
 			reelprogress -= ReelSpeed * Time.deltaTime;
 			reelprogress = Mathf.Max(reelprogress, 0);
 
+			if (reelprogress <= 0) hook.CatchFish();
+
 			Vector2 vector2 = rodDeltaPos * LineWhipRate * Time.deltaTime;
-			avgRodVelocity = (avgRodVelocity + vector2)*.5f;
+			avgRodVelocity = (avgRodVelocity + vector2) * .5f;
 
 		} else {
 			reelprogress = 1;
@@ -138,8 +141,8 @@ public class PlayerScript : MonoBehaviour {
 
 
 		// tug fishing line towards hook
-		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > maxDistance * .8f) {
-			hookPoints[hookPoints.Count - 1] = hook.position + (hookPoints[hookPoints.Count - 1] - hook.position).normalized * maxDistance * .8f;
+		if (Vector3.Distance(hookRigidbody.position, hookPoints[hookPoints.Count - 1]) > maxDistance * .8f) {
+			hookPoints[hookPoints.Count - 1] = hookRigidbody.position + (hookPoints[hookPoints.Count - 1] - hookRigidbody.position).normalized * maxDistance * .8f;
 		}
 
 		// tug other parts of line in order towards fishing rod
@@ -196,12 +199,12 @@ public class PlayerScript : MonoBehaviour {
 		// }
 
 		// tug hook
-		if (Vector3.Distance(hook.position, hookPoints[hookPoints.Count - 1]) > maxDistance) {
-			Vector2 delta = (hook.position - hookPoints[hookPoints.Count - 1]);
-			hook.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * maxDistance);
+		if (Vector3.Distance(hookRigidbody.position, hookPoints[hookPoints.Count - 1]) > maxDistance) {
+			Vector2 delta = (hookRigidbody.position - hookPoints[hookPoints.Count - 1]);
+			hookRigidbody.MovePosition(hookPoints[hookPoints.Count - 1] + delta.normalized * maxDistance);
 			// flick hook if it was tugged
 			// if (Vector3.Angle(hook.velocity, delta) < 45)
-				// hook.velocity = Vector2.zero;
+			// hook.velocity = Vector2.zero;
 
 			// Vector2 newVelocity = -delta * Mathf.Abs(rodDelta) * LineWhipRate;
 			// avgRodVelocity = (avgRodVelocity + newVelocity) / 2;
@@ -210,7 +213,7 @@ public class PlayerScript : MonoBehaviour {
 
 		if (queuedSend) {
 			Vector2 vector2 = avgRodVelocity;//rodDeltaPos * LineWhipRate * Time.deltaTime;
-			hook.velocity = vector2;
+			hookRigidbody.velocity = vector2;
 			Debug.Log($"sent hook with velocity {vector2} ({RodEnd.position}, {rodEndOldPos})");
 		}
 
@@ -255,8 +258,8 @@ public class PlayerScript : MonoBehaviour {
 				lastPos = item;
 			}
 		}
-		if (Vector3.Distance(lastPos, hook.position) > 1f) {
-			line.spline.InsertPointAt(0, hook.position);
+		if (Vector3.Distance(lastPos, hookRigidbody.position) > 1f) {
+			line.spline.InsertPointAt(0, hookRigidbody.position);
 		}
 
 		// wobble player
