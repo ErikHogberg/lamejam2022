@@ -71,8 +71,8 @@ public class Fish : MonoBehaviour {
 		if (spawntimer < 0 && AllFish.Count < Limit) {
 			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
-		}
 		FindObjectOfType<AudioManager>().Play("FishCollision");
+		}
 
 	}
 	public void RestartTimer() {
