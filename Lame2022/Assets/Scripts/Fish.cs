@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Fish : MonoBehaviour {
 
+
+	const int Limit = 30;
+
 	public Rigidbody2D rb;
 	public Collider2D fishCollider;
 	public Vector2 speed;
@@ -27,8 +30,8 @@ public class Fish : MonoBehaviour {
 
 	private void OnDestroy() {
 		allFish.Remove(this);
-		if(allFish.Count > 2){
-			// TODO: game over
+		if (allFish.Count > 2) {
+			menuStart.MainInstance.GameOverScreen();
 		}
 	}
 
@@ -46,16 +49,13 @@ public class Fish : MonoBehaviour {
 		spawntimer -= Time.deltaTime;
 
 	}
-	
+
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!collision.gameObject.CompareTag("fish")) return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
-		if (spawntimer < 0) {
-		var fish= Instantiate(this,transform.parent);
-
-
+		if (spawntimer < 0 && allFish.Count < Limit) {
+			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
-
 		}
 
 	}

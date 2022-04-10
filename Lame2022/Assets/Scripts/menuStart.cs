@@ -1,17 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class menuStart : MonoBehaviour
 {
+
+	public static menuStart MainInstance = null;
+
 	public GameObject startMenu;
 	public GameObject gameOverMenu;
 
-	// Start is called before the first frame update
+	public UnityEvent StartEvent;
+	public UnityEvent GameOverEvent;
+
 	void Start()
     {		
+		MainInstance = this;
 		startMenu.SetActive(true);
+		StartEvent.Invoke();
     }
 
 	public void RestartGame() 
@@ -22,5 +30,6 @@ public class menuStart : MonoBehaviour
 	public void GameOverScreen() 
 	{
 		gameOverMenu.SetActive(true);
+		GameOverEvent.Invoke();
 	}
 }
