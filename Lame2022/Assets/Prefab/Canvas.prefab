@@ -1356,6 +1356,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startMenu: {fileID: 6676130866234135349}
   gameOverMenu: {fileID: 7489407257883361562}
+  StartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  GameOverEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6676130865731587394}
+        m_TargetAssemblyTypeName: PauseGame, Assembly-CSharp
+        m_MethodName: Pause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6676130865759385277
 GameObject:
   m_ObjectHideFlags: 0
@@ -1972,7 +1990,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &789076979950109460
 RectTransform:
   m_ObjectHideFlags: 0
