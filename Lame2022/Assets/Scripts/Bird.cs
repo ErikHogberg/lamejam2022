@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,10 +50,13 @@ public class Bird : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
-		if (!flyingOut && target) {
+		if (!flyingOut ) {
+			if (target) {
+
 			Vector2 targetDir = (target.transform.position - transform.position).normalized;
 			rb.velocity = targetDir * FlyInSpeed;
 			rb.angularVelocity = 0;
+			}
 		} else {
 			despawnTimer -= Time.fixedDeltaTime;
 			if (despawnTimer < 0f) {
@@ -94,6 +97,7 @@ public class Bird : MonoBehaviour {
 			fish.rb.isKinematic = true;
 			fish.fishCollider.enabled = false;
 			fish.transform.parent = transform;
+			despawnTimer = DespawnTime;
 		}
 
 	}
