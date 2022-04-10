@@ -34,6 +34,9 @@ public class PlayerScript : MonoBehaviour {
 	[Range(0, 1)]
 	public float ReeledMul = .2f;
 	public float ReelSpeed = .2f;
+
+	[Min(0)]
+	public float InstantReelThreshold = 1f;
 	public AnimationCurve ReelCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
 	[Space]
@@ -72,7 +75,7 @@ public class PlayerScript : MonoBehaviour {
 
 		mouse = Mouse.current;
 		kbd = Keyboard.current;
-		
+
 	}
 
 	private void FixedUpdate() {
@@ -113,14 +116,14 @@ public class PlayerScript : MonoBehaviour {
 		Vector2 rodDeltaPos = RodEnd.position - rodEndOldPos;
 		float rodDelta = rodDeltaPos.magnitude; //rodNewAngle - rodOldAngle;
 
-		// FIXME: reelprogress resets each frame, left button pressed and released simultanously?
 
 		bool queuedSend = false;
+		// if (kbd.spaceKey.isPressed) {
 		if (mouse.leftButton.isPressed) {
 			reelIn = true;
 			//avgRodVelocity =Vector2.zero;
-		} else
-		if (mouse.leftButton.wasReleasedThisFrame) {
+		} else {
+			// if (kbd.spaceKey.wasReleasedThisFrame) {
 			reelIn = false;
 			queuedSend = true;
 			// hook.velocity = rodDeltaPos * LineWhipRate * Time.deltaTime;
@@ -128,7 +131,9 @@ public class PlayerScript : MonoBehaviour {
 
 		if (reelIn) {
 			reelprogress -= ReelSpeed * Time.deltaTime;
-			reelprogress = Mathf.Max(reelprogress, 0);
+			// reelprogress = Mathf.Max(reelprogress, 0);
+
+			if (Vector2.Distance(transform.position, hook.transform.position) < InstantReelThreshold) reelprogress = 0;
 
 			if (reelprogress <= 0) hook.CatchFish();
 
@@ -139,12 +144,12 @@ public class PlayerScript : MonoBehaviour {
 			reelprogress = 1;
 		}
 
-		DebugText.SetText(reelprogress.ToString("0.0"));
-		reelprogress = Mathf.Lerp(ReeledMul, 1, ReelCurve.Evaluate(reelprogress));
+		DebugText.SetText($"reel: {reelprogress.ToString("0.00")}, {reelIn}");
+		float reelprogressLerp = Mathf.Lerp(ReeledMul, 1, ReelCurve.Evaluate(reelprogress));
 
 
-		float minDistance = reelprogress * LineMinPointDistance;
-		float maxDistance = reelprogress * LinePointDistance;
+		float minDistance = reelprogressLerp * LineMinPointDistance;
+		float maxDistance = reelprogressLerp * LinePointDistance;
 
 
 		// tug fishing line towards hook
@@ -221,7 +226,7 @@ public class PlayerScript : MonoBehaviour {
 		if (queuedSend) {
 			Vector2 vector2 = avgRodVelocity;//rodDeltaPos * LineWhipRate * Time.deltaTime;
 			hookRigidbody.velocity = vector2;
-			Debug.Log($"sent hook with velocity {vector2} ({RodEnd.position}, {rodEndOldPos})");
+			// Debug.Log($"sent hook with velocity {vector2} ({RodEnd.position}, {rodEndOldPos})");
 		}
 
 

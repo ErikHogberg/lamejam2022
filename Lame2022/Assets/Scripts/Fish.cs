@@ -30,7 +30,7 @@ public class Fish : MonoBehaviour {
 
 	private void OnDestroy() {
 		AllFish.Remove(this);
-		if (AllFish.Count < 2) {
+		if (AllFish.Count < 1) {
 			menuStart.MainInstance.GameOverScreen();
 		}
 	}
@@ -57,6 +57,7 @@ public class Fish : MonoBehaviour {
 			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
 		}
+		FindObjectOfType<AudioManager>().Play("FishCollision");
 
 	}
 	public void RestartTimer() {
