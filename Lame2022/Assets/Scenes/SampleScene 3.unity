@@ -2653,6 +2653,15 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  - name: SeagullSteal
+    clip: {fileID: 8300000, guid: c9174cea6784ffc41960cc753b05b72f, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
 --- !u!4 &2033012746
 Transform:
   m_ObjectHideFlags: 0
