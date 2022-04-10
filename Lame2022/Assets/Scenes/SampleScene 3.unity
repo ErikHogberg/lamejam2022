@@ -722,6 +722,7 @@ MonoBehaviour:
   target: {fileID: 311275989}
   FlyInSpeed: 100
   FlyOutSpeed: 200
+  DespawnTime: 5
 --- !u!1 &475736567
 GameObject:
   m_ObjectHideFlags: 0
@@ -2900,5 +2901,6 @@ MonoBehaviour:
   LinePointDistance: 0.4
   LineMinPointDistance: 0.2
   LinePointCount: 50
-  LineFloatRate: 1
+  HookFloatRate: 1
+  LineFloatRate: 3
   LineWhipRate: 10000000

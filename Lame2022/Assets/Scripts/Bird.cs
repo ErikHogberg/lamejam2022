@@ -53,6 +53,7 @@ public class Bird : MonoBehaviour {
 		if (!flyingOut && target) {
 			Vector2 targetDir = (target.transform.position - transform.position).normalized;
 			rb.velocity = targetDir * FlyInSpeed;
+			rb.angularVelocity = 0;
 		} else {
 			despawnTimer -= Time.fixedDeltaTime;
 			if(despawnTimer < 0f) {
