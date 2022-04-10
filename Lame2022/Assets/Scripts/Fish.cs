@@ -17,11 +17,11 @@ public class Fish : MonoBehaviour {
 	public Sprite[] sprites;
 	SpriteRenderer spriteRenderer;
 
-	static List<Fish> allFish = new List<Fish>();
+	public static List<Fish> AllFish = new List<Fish>();
 
 	void Start() {
 
-		allFish.Add(this);
+		AllFish.Add(this);
 
 		rb.velocity = speed;
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -29,8 +29,8 @@ public class Fish : MonoBehaviour {
 	}
 
 	private void OnDestroy() {
-		allFish.Remove(this);
-		if (allFish.Count < 2) {
+		AllFish.Remove(this);
+		if (AllFish.Count < 2) {
 			menuStart.MainInstance.GameOverScreen();
 		}
 	}
@@ -53,7 +53,7 @@ public class Fish : MonoBehaviour {
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!collision.gameObject.CompareTag("fish")) return;
 		collision.gameObject.GetComponent<Fish>().RestartTimer();
-		if (spawntimer < 0 && allFish.Count < Limit) {
+		if (spawntimer < 0 && AllFish.Count < Limit) {
 			var fish = Instantiate(this, transform.parent);
 			spawntimer = 1;
 		}
