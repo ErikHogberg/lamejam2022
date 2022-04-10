@@ -81,10 +81,12 @@ public class Bird : MonoBehaviour {
 				target.rb.isKinematic = false;
 				target.fishCollider.enabled = true;
 				target.transform.parent = transform.parent;
+				
 			}
 		} else
 		if (!holdingFish && other.gameObject.CompareTag("fish")) {
 			Debug.Log("bird grabbed fish");
+			FindObjectOfType<AudioManager>().Play("SeagullSteal");
 			flyingOut = true;
 			holdingFish = true;
 			Fish fish = other.gameObject.GetComponent<Fish>();
